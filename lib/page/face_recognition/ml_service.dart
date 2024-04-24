@@ -11,6 +11,9 @@ import '../../utils/utils.dart';
 import 'image_converter.dart';
 
 class MLService {
+  static const modelPath = 'assets/models/mobilefacenet.tflite';
+  // static const modelPath = 'models/face_detection_front.tflite';
+
   late Interpreter interpreter;
   List? predictedArray;
 
@@ -55,30 +58,42 @@ class MLService {
   }
 
   initializeInterpreter() async {
-    Delegate? delegate;
-    try {
-      if (Platform.isAndroid) {
-        delegate = GpuDelegateV2(
-            options: GpuDelegateOptionsV2(
-          isPrecisionLossAllowed: false,
-          inferencePreference: TfLiteGpuInferenceUsage.fastSingleAnswer,
-          inferencePriority1: TfLiteGpuInferencePriority.minLatency,
-          inferencePriority2: TfLiteGpuInferencePriority.auto,
-          inferencePriority3: TfLiteGpuInferencePriority.auto,
-        ));
-      } else if (Platform.isIOS) {
-        delegate = GpuDelegate(
-          options: GpuDelegateOptions(
-              allowPrecisionLoss: true,
-              waitType: TFLGpuDelegateWaitType.active),
-        );
-      }
-      var interpreterOptions = InterpreterOptions()..addDelegate(delegate!);
+    final options = InterpreterOptions();
 
-      interpreter = await Interpreter.fromAsset('mobilefacenet.tflite',
-          options: interpreterOptions);
+    try {
+      // Use XNNPACK Delegate
+      if (Platform.isAndroid) {
+        options.addDelegate(XNNPackDelegate());
+      }
+
+      // Use GPU Delegate
+      // doesn't work on emulator
+      // if (Platform.isAndroid) {
+      //   options.addDelegate(GpuDelegateV2());
+      // }
+
+      // Use Metal Delegate
+      if (Platform.isIOS) {
+        options.addDelegate(GpuDelegate());
+      }
+
+      // Load model from assets
+      interpreter = await Interpreter.fromAsset(modelPath, options: options);
+
+      // Delegate? delegate;
+      // if (Platform.isAndroid) {
+      //   delegate = GpuDelegateV2(
+      //       options: GpuDelegateOptionsV2(isPrecisionLossAllowed: false));
+      // } else if (Platform.isIOS) {
+      //   delegate = GpuDelegate(
+      //     options: GpuDelegateOptions(allowPrecisionLoss: true),
+      //   );
+      // }
+      // var interpreterOptions = InterpreterOptions()..addDelegate(delegate!);
+
+      // interpreter = await Interpreter.fromAsset('mobilefacenet.tflite',
+      //     options: interpreterOptions);
     } catch (e) {
-      printIfDebug('Failed to load model.');
       printIfDebug(e);
     }
   }

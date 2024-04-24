@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "203917176729",
+    "project_id": "palmprint-bff03",
+    "storage_bucket": "palmprint-bff03.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:203917176729:android:cd906f4c8691126ec42d08",
+        "android_client_info": {
+          "package_name": "com.makan.face_auth_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcmrvkz8uNDhAdi0HoymovEwDTfM1oltc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

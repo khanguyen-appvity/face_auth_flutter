@@ -172,12 +172,14 @@ class _FaceScanScreenState extends State<FaceScanScreen> {
                             text: "Capture",
                             context: context,
                             isClickable: true,
-                            onTap: (){
+                            onTap: () {
                               bool canProcess = false;
-                              _cameraController.startImageStream((CameraImage image) async {
+                              _cameraController
+                                  .startImageStream((CameraImage image) async {
                                 if (canProcess) return;
                                 canProcess = true;
-                                _predictFacesFromImage(image: image).then((value) {
+                                _predictFacesFromImage(image: image)
+                                    .then((value) {
                                   canProcess = false;
                                 });
                                 return null;
